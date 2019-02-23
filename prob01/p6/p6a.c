@@ -8,7 +8,7 @@ int main(int argc, char **argv)
     char buf[BUF_LENGTH];
     if( argc != 3)
     {
-        printf("usage: %s file1 fil2", argv[1]);
+        printf("usage: %s file1 file2", argv[0]);
         exit(3);
     }
     if ( ( src = fopen( argv[1], "r" ) ) == NULL )
