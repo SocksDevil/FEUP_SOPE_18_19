@@ -37,6 +37,6 @@ int main(int argc, char *argv[])
     }
     close(fd1);
     if (argc == 3)
-    close(fd2);
+        close(fd2);
     return 0;
 }
