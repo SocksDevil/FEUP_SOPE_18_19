@@ -4,12 +4,14 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
 
 #define BUFF 50
 #define ARGS 20
 
 int main(int argc, char *argv[], char *envp[]){
     char buffer[BUFF];
+    int stdout = dup(1);
     char * arguments[ARGS] = {NULL};
     char exitWord[] = "quit";
     printf("minish >");
@@ -24,23 +26,32 @@ int main(int argc, char *argv[], char *envp[]){
         for(i; i < ARGS; i++)
         {
             tok = strtok(NULL, " ");
-            if(tok == NULL)
-            {
+            if(tok == NULL){
                 arguments[i] = NULL;
+                arguments[i - 1][strlen(arguments[i - 1]) - 1] = '\0';
                 break;
             }
+            else if(strcmp(tok, "-o") == 0){
+                tok = strtok(NULL, " ");
+                arguments[i] = NULL;
+                if(tok == NULL){
+                    printf("No file was appointed, writing to screen\n");
+                    break;
+                }else
+                {
+                    tok[strlen(tok) - 1] = '\0';
+                    int fd = open(tok, O_WRONLY | O_CREAT, 0600);
+                    dup2(fd, STDOUT_FILENO);
+                    break;
+                }
+                
+            }
             arguments[i] = tok;
-        }
-        arguments[i - 1][strlen(arguments[i - 1]) - 1] = '\0';
-        for(int i = 0; i < ARGS; i++)
-        {
-            if(arguments[i] == NULL)
-                break;
-            printf("%d - %s\n",i, arguments[i]);
         }
         if(fork() > 0){
             int status;
             wait(&status);
+            dup2(stdout, STDOUT_FILENO);
             printf("\nminish >");
         }
         else
