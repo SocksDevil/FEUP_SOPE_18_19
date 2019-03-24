@@ -26,21 +26,15 @@ int main(void){
         printf("Write two numbers: \n");
         scanf("%d", &num.first);        
         scanf("%d", &num.second);
-        sprintf(line, "%d", num.first);
-        write(fd[WRITE], line, sizeof(line));        
-        sprintf(line, "%d", num.second);
-        write(fd[WRITE], line, sizeof(line));        
+        write(fd[WRITE], &num, sizeof(num));        
     }
     else{
         close(fd[WRITE]);
-        n = read(fd[READ], line, BUFFER);
-        first = atoi(line);
-        n = read(fd[READ], line, BUFFER);
-        second = atoi(line);
-        int sum = first + second;
-        int diff = first - second;
-        double division = first/(double) second;
-        int mult = first * second;
+        n = read(fd[READ], &num, BUFFER);
+        int sum = num.first + num.second;
+        int diff = num.first - num.second;
+        double division = num.first/(double) num.second;
+        int mult = num.first * num.second;
         printf("Sum: %d, Difference: %d, Division: %f, Multiplication: %d\n", sum, diff, division, mult);
     }
     

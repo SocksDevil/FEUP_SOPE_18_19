@@ -19,17 +19,14 @@ int main(void){
         printf("Write two numbers: \n");
         scanf("%d", &first);        
         scanf("%d", &second);
-        sprintf(line, "%d", first);
-        write(fd[WRITE], line, sizeof(line));        
+        write(fd[WRITE], &first, sizeof(first));        
         sprintf(line, "%d", second);
-        write(fd[WRITE], line, sizeof(line));        
+        write(fd[WRITE], &second, sizeof(second));        
     }
     else{
         close(fd[WRITE]);
-        n = read(fd[READ], line, BUFFER);
-        first = atoi(line);
-        n = read(fd[READ], line, BUFFER);
-        second = atoi(line);
+        n = read(fd[READ], &first, BUFFER);
+        n = read(fd[READ], &second, BUFFER);
         int sum = first + second;
         int diff = first - second;
         double division = first/(double) second;
