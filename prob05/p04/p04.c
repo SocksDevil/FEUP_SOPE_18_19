@@ -25,7 +25,6 @@ int main(int argc, char * argv[]){
             exit(1);   
         }
         else{
-            // printf("1: %s\n", argv[1]);
             close(fd1[READ]);
             dup2(fd2[READ], STDIN_FILENO);
             dup2(fd1[WRITE], STDOUT_FILENO);
