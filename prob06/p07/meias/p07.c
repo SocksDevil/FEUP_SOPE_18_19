@@ -22,12 +22,14 @@ void * copy_file(void * arg){
     if (S_ISREG(info->stat_buf.st_mode)){
         sprintf(command, "cp %s %s", info->direntp.d_name, info->buffer);
         system(command);
+        // execlp("cp", "cp", info->direntp.d_name, info->buffer, NULL);
     } 
     else if (S_ISDIR(info->stat_buf.st_mode)){
         if(strstr(info->direntp.d_name, ".") == NULL && strstr(info->direntp.d_name, "..") == NULL)
         {
             sprintf(command,  "mkdir %s %s", info->direntp.d_name, info->buffer);
             system(command);
+            // execlp("mkdir", "mkdir", info->direntp.d_name, info->buffer, NULL);
         }
     }
     pthread_exit(0);
