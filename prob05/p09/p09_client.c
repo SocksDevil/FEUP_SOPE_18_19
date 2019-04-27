@@ -17,7 +17,7 @@ struct arguments
 
 int main(int argc, char ** argv){
     int n, fd;
-    char buffer[500];
+    char buffer[500], result[500];
     struct arguments args;
     ++argv;
     args.argv = malloc(sizeof(argv));
@@ -30,17 +30,20 @@ int main(int argc, char ** argv){
     //     printf("Argument: %s\n", args.argv[i]);
     // }
     strcpy(args.argv, argv[0]);
-    printf("Argument: %s", args.argv);
+    printf("Argument: %s\n", args.argv);
     args.pid = getpid();
+    printf("PID: %d\n", args.pid);
     fd = open("/tmp/fifo.s", O_WRONLY);
-    write(fd,&args, sizeof(args));
-    write(fd, buffer, strlen(buffer));
+    write(fd,&args.pid, sizeof(args.pid));
+    write(fd, "ls", strlen("ls"));
     close(fd);
     char * fifo = "/tmp/fifo.";
     sprintf(buffer, "%s%d", fifo, args.pid);
+    printf("Opening %s\n", buffer);
     mkfifo(buffer, 0660);
     fd = open(buffer, O_RDONLY);
-    n = read(fd, buffer, 500);
-    write(STDOUT_FILENO, buffer, n);
+    n = read(fd, result, 500);
+    // write(STDOUT_FILENO, buffer, n);
+    printf("Result: %s - n:%d\n", result, n);
     return 0;
 }

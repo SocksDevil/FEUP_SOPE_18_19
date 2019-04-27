@@ -1,4 +1,5 @@
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -26,15 +27,17 @@ int main(void){
     struct arguments args;
     mkfifo("/tmp/fifo.s", 0660);
     while(fd = open("/tmp/fifo.s", O_RDONLY) ){
-        while((n = read(fd, &args, BUFFER)) != 0){
+        while((n = read(fd, &pid, BUFFER)) != 0){
             // tok = strtok(NULL, " ");
-            if(fork() == 0){
-                char * argument;
+            char * argument;
+            (n = read(fd, argument, BUFFER) != 0);
+
+            if(fork() > 0){
                 // n = read(fd, argument, BUFFER);
                 // printf("Meias\n");
                 // write(STDOUT_FILENO, buffer, n);
                 // arguments[0] = argument;
-                printf("Entering cycle: %s\n", args.argv);
+                printf("Entering cycle!\n");
                 // for(int i = 0; i < ARGS; i++){
                 //     printf("Meias\n");
                 //     argument = args.argv;
@@ -49,20 +52,24 @@ int main(void){
                 //     arguments[i] = argument;
                 // }
                 char fifo_pid[BUFFER];
-                sprintf(fifo_pid, "%s%d", fifo, args.pid);
+                sprintf(fifo_pid, "%s%d", fifo, pid);
                 printf("Opening %s\n", fifo_pid);
                 int fifo_fd = open(fifo_pid, O_WRONLY);
-                dup2(fifo_fd, STDOUT_FILENO);
-                execvp(arguments[0], arguments);
+                // dup2(fifo_fd, STDOUT_FILENO);
+                printf("Reached here: %s\n", argument);
+                execlp(argument, argument);
                 printf("Failed to execute exec!\n");
+                write(fifo_fd, "STOPPED", strlen("STOPPED"));
                 exit(1);
             }
             else
             {
-                printf("PID %u initializing work...\n", args.pid);
+                wait(NULL); 
+                printf("Stopped waiting\n");               
             }
         }
-        close(fd);
+        // close(fd);
     }
+    printf("Ending!\n");
     return 0;
 }

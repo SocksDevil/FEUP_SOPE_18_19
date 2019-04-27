@@ -20,7 +20,6 @@ void *fill(void *nr, int * buf, int * pos, sem_t * sem)
 {
     while (1) {
         sem_wait(sem);
-        printf("Reached count\n");
         if (pos[0] >= npos) {
             sem_post(sem);
             return NULL;
